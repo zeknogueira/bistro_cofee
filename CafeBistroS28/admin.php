@@ -10,19 +10,26 @@
   <link rel="stylesheet" href="css/admin.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="icon" href="img/icone-serenatto.png" type="image/x-icon">
+  <link rel="icon" href="img/icone-ifsp2.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Serenatto - Admin</title>
+  <title>IFSP - Admin</title>
 </head>
 <body>
 <main>
   <section class="container-admin-banner">
-    <img src="img/logo-serenatto-horizontal.png" class="logo-admin" alt="logo-serenatto">
-    <h1>Admistração Serenatto</h1>
+    <img src="img/logo-ifsp-removebg.png" class="logo-admin" alt="logo-IFSP">
+    <h1>Admistração IFSP Café Bistrô</h1>
     <img class= "ornaments" src="img/ornaments-coffee.png" alt="ornaments">
   </section>
   <h2>Lista de Produtos</h2>
+  <?php 
+  if (isset($_GET["sucess"]) == 1){
+    echo "<h2>Produto Excluído com Sucesso</h2>"; 
+  } 
+  if (isset($_GET["error"]) == 1){
+    echo "<h2>Erro ao Excluir o produto. Por favor, tente novamente</h2>";
+  }?>
 
   <section class="container-table">
     <table>
@@ -35,39 +42,42 @@
           <th colspan="2">Ação</th>
         </tr>
       </thead>
-      <?php 
+      <?php
       require "conexao.php";
-      $sql = "SELECT * FROM produtos ORDER BY tipo, preco ASC";
+      $sql = "select * from produtos order by tipo, preco ASC";
       $result = $conn->query($sql);
 
-      if($result->num_rows > 0){
-        while($row = $result->fetch_assoc()){
-      
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
       ?>
+
       <tbody>
       <tr>
         <td><?= $row['nome'] ?></td>
         <td><?= $row['tipo'] ?></td>
         <td><?= $row['descricao'] ?></td>
-        <td><?= $row['preco'] ?></td>
+        <td><?= 'R$'. $row['preco'] ?></td>
+       
         <td>
-
-          <form action="editar-produto.php" method="GET">
-            <input type="hidden" name="id" value="<?=$row['id']?>">
-            <input type="submit" name="botao-editar" class="botao-editar" value="Editar">
-          </form></td>
-          <td>
-          <form action="editar-produto.php" method="GET">
-            <input type="hidden" name="id" value="<?=$row['id']?>">
-            <input type="submit" name="botao-excluir" class="botao-excluir" value="Excluir">
+        <form action="editar-produto.php" method="GET"> 
+          <input type="hidden" name="id" value="<?= $row['id'] ?>">
+          <input type="submit" class="botao-editar" value="Editar">
+          </form>
+        </td>
+        <td>
+          <form action="processar_excluir_produto.php" method="POST">
+            <input type="hidden" name="id" value="<?= $row['id'] ?>">
+            <input type="submit" class="botao-excluir" value="Excluir">
           </form>
         </td>
         
       </tr>
-    <?php } } ?>
+      <?php }
+                }
+                ?>
       </tbody>
     </table>
-  <a class="botao-cadastrar" href="cadastrar-produto.html">Cadastrar produto</a>
+  <a class="botao-cadastrar" href="cadastrar-produto.php">Cadastrar produto</a>
   <form action="#" method="post">
     <input type="submit" class="botao-cadastrar" value="Baixar Relatório"/>
   </form>
